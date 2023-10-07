@@ -21,3 +21,19 @@ def create_restaurant(db: Session, restaurant):
     except Exception:
         db.rollback()
         return None
+
+
+def update_restaurant(db: Session, restaurant_id: int, restaurant):
+    try:
+        db_restaurant = db.query(Restaurant).filter(
+            Restaurant.id == restaurant_id).first()
+        for var, value in restaurant:
+            if value is not None:
+                setattr(db_restaurant, var, value)
+        db.add(db_restaurant)
+        db.commit()
+        db.refresh(db_restaurant)
+        return db_restaurant
+    except Exception:
+        db.rollback()
+        return None

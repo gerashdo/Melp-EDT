@@ -23,3 +23,16 @@ class Restaurant(RestaurantBase):
 
     class Config:
         orm_mode = True
+
+
+class RestaurantUpdate(BaseModel):
+    rating: int | None = None
+    name: str | None = None
+    site: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    street: str | None = None
+    city: str | None = None
+    state: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
