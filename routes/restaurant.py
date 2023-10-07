@@ -39,12 +39,15 @@ def get_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
 
 
 @restaurant.post("/restaurants/", response_model=restaurant_schema.Restaurant)
-def create_restaurant(restaurant: restaurant_schema.RestaurantCreate, db: Session = Depends(get_db)):
+def create_restaurant(
+        restaurant: restaurant_schema.RestaurantCreate,
+        db: Session = Depends(get_db)):
     new_restaurant = restaurant_controller.create_restaurant(
         db=db, restaurant=restaurant)
     if new_restaurant is None:
         raise HTTPException(
-            status_code=500, detail="Restaurant could not be created, contact the administrator.")
+            status_code=500,
+            detail="Restaurant could not be created, contact the administrator.")
     return new_restaurant
 
 
@@ -52,7 +55,10 @@ def create_restaurant(restaurant: restaurant_schema.RestaurantCreate, db: Sessio
                 response_model=restaurant_schema.Restaurant,
                 tags=['restaurants'],
                 description='Update a restaurant by id.')
-def update_restaurant(restaurant_id: int, restaurant: restaurant_schema.RestaurantUpdate, db: Session = Depends(get_db)):
+def update_restaurant(
+        restaurant_id: int,
+        restaurant: restaurant_schema.RestaurantUpdate,
+        db: Session = Depends(get_db)):
     restaurant_to_update = restaurant_controller.get_restaurant(
         db, restaurant_id=restaurant_id)
     if restaurant_to_update is None:
@@ -62,14 +68,15 @@ def update_restaurant(restaurant_id: int, restaurant: restaurant_schema.Restaura
         db=db, restaurant_id=restaurant_id, restaurant=restaurant)
     if updated_restaurant is None:
         raise HTTPException(
-            status_code=500, detail="Restaurant could not be updated, contact the administrator.")
+            status_code=500,
+            detail="Restaurant could not be updated, contact the administrator.")
     return updated_restaurant
 
 
 @restaurant.delete("/restaurants/{restaurant_id}",
-                     response_model=restaurant_schema.Restaurant,
-                     tags=['restaurants'],
-                     description='Delete a restaurant by id.')
+                   response_model=restaurant_schema.Restaurant,
+                   tags=['restaurants'],
+                   description='Delete a restaurant by id.')
 def delete_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
     restaurant_to_delete = restaurant_controller.get_restaurant(
         db, restaurant_id=restaurant_id)
@@ -80,5 +87,6 @@ def delete_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
         db=db, restaurant_id=restaurant_id)
     if deleted_restaurant is None:
         raise HTTPException(
-            status_code=500, detail="Restaurant could not be deleted, contact the administrator.")
+            status_code=500,
+            detail="Restaurant could not be deleted, contact the administrator.")
     return deleted_restaurant
