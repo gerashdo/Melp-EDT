@@ -37,3 +37,15 @@ def update_restaurant(db: Session, restaurant_id: int, restaurant):
     except Exception:
         db.rollback()
         return None
+
+
+def delete_restaurant(db: Session, restaurant_id: int):
+    try:
+        db_restaurant = db.query(Restaurant).filter(
+            Restaurant.id == restaurant_id).first()
+        db.delete(db_restaurant)
+        db.commit()
+        return db_restaurant
+    except Exception:
+        db.rollback()
+        return None

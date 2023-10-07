@@ -64,3 +64,21 @@ def update_restaurant(restaurant_id: int, restaurant: restaurant_schema.Restaura
         raise HTTPException(
             status_code=500, detail="Restaurant could not be updated, contact the administrator.")
     return updated_restaurant
+
+
+@restaurant.delete("/restaurants/{restaurant_id}",
+                     response_model=restaurant_schema.Restaurant,
+                     tags=['restaurants'],
+                     description='Delete a restaurant by id.')
+def delete_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
+    restaurant_to_delete = restaurant_controller.get_restaurant(
+        db, restaurant_id=restaurant_id)
+    if restaurant_to_delete is None:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    deleted_restaurant = restaurant_controller.delete_restaurant(
+        db=db, restaurant_id=restaurant_id)
+    if deleted_restaurant is None:
+        raise HTTPException(
+            status_code=500, detail="Restaurant could not be deleted, contact the administrator.")
+    return deleted_restaurant
