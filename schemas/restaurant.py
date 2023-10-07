@@ -14,6 +14,10 @@ class RestaurantBase(BaseModel):
     longitude: float
 
 
+class RestaurantCreate(RestaurantBase):
+    pass
+
+
 class Restaurant(RestaurantBase):
     id: int
 

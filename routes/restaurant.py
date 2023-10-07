@@ -18,7 +18,7 @@ def get_db():
         db.close()
 
 
-@restaurant.get("/restaurants",
+@restaurant.get("/restaurants/",
                 response_model=list[restaurant_schema.Restaurant],
                 tags=['restaurants'],
                 description='Retrive all restaurants from the data base.')
@@ -36,3 +36,13 @@ def get_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
     if db_restaurant is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return db_restaurant
+
+
+@restaurant.post("/restaurants/", response_model=restaurant_schema.Restaurant)
+def create_restaurant(restaurant: restaurant_schema.RestaurantCreate, db: Session = Depends(get_db)):
+    new_restaurant = restaurant_controller.create_restaurant(
+        db=db, restaurant=restaurant)
+    if new_restaurant is None:
+        raise HTTPException(
+            status_code=500, detail="Restaurant could not be created, contact the administrator.")
+    return new_restaurant
