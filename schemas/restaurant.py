@@ -41,3 +41,9 @@ class RestaurantUpdate(BaseModel):
 
 class RestaurantImportResponse(BaseModel):
     total_imported: int
+
+
+class RestaurantStatistics(BaseModel):
+    count: int
+    average_rating: float
+    standard_deviation: float

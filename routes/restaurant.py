@@ -26,6 +26,29 @@ def get_all_restaurants(db: Session = Depends(get_db)):
     return restaurant_controller.get_all_restaurants(db)
 
 
+@restaurant.get("/restaurants/statistics",
+                response_model=restaurant_schema.RestaurantStatistics,
+                tags=['restaurants'],
+                description='Retrive statistics of restaurants by a given latitude, lingitude and radius.')
+async def get_restaurants_stats(
+    latitude: float,
+    longitude: float,
+    radius: float,
+    db: Session = Depends(get_db)
+):
+    db = SessionLocal()
+    try:
+        stats = restaurant_controller.get_restaurants_statistics(
+            db, latitude, longitude, radius)
+        return stats
+    except Exception as e:
+        print(e)
+        raise HTTPException(
+            status_code=500,
+            detail="Restaurants statistics could not be retrieved, contact the administrator."
+        )
+
+
 @restaurant.get("/restaurants/{restaurant_id}",
                 response_model=restaurant_schema.Restaurant,
                 tags=['restaurants'],

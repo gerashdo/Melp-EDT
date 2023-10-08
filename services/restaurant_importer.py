@@ -1,4 +1,5 @@
 from pandas import read_csv
+from geoalchemy2 import functions as geo_func
 
 from config.db import SessionLocal
 from models.restaurant import Restaurant
@@ -51,7 +52,12 @@ class RestaurantImporterService:
                 city=row['city'],
                 state=row['state'],
                 latitude=row['lat'],
-                longitude=row['lng']
+                longitude=row['lng'],
+                geom=geo_func.ST_SetSRID(
+                    geo_func.ST_MakePoint(
+                        row['lng'], row['lat']),
+                    4326  # SRID for WGS 84
+                )
             )
             return restaurant
         except Exception as e:

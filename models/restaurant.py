@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float
+from geoalchemy2 import Geometry
 
 from config.db import Base
 
@@ -18,3 +19,4 @@ class Restaurant(Base):
     state = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
+    geom = Column(Geometry(geometry_type='POINT', srid='4326'))
