@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class RestaurantBase(BaseModel):
+    id: str
     rating: int
     name: str
     site: str
@@ -19,7 +20,7 @@ class RestaurantCreate(RestaurantBase):
 
 
 class Restaurant(RestaurantBase):
-    id: int
+    internal_id: int
 
     class Config:
         orm_mode = True
@@ -36,3 +37,7 @@ class RestaurantUpdate(BaseModel):
     state: str | None = None
     latitude: float | None = None
     longitude: float | None = None
+
+
+class RestaurantImportResponse(BaseModel):
+    total_imported: int

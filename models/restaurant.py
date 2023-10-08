@@ -6,7 +6,8 @@ from config.db import Base
 class Restaurant(Base):
     __tablename__ = "restaurants"
 
-    id = Column(Integer, primary_key=True, index=True)
+    internal_id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, unique=True)
     rating = Column(Integer)
     name = Column(String)
     site = Column(String)

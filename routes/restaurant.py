@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from fastapi import APIRouter
 
@@ -30,7 +30,7 @@ def get_all_restaurants(db: Session = Depends(get_db)):
                 response_model=restaurant_schema.Restaurant,
                 tags=['restaurants'],
                 description='Retrive a restaurant by id.')
-def get_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
+def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
     db_restaurant = restaurant_controller.get_restaurant(
         db, restaurant_id=restaurant_id)
     if db_restaurant is None:
@@ -56,7 +56,7 @@ def create_restaurant(
                 tags=['restaurants'],
                 description='Update a restaurant by id.')
 def update_restaurant(
-        restaurant_id: int,
+        restaurant_id: str,
         restaurant: restaurant_schema.RestaurantUpdate,
         db: Session = Depends(get_db)):
     restaurant_to_update = restaurant_controller.get_restaurant(
@@ -77,7 +77,7 @@ def update_restaurant(
                    response_model=restaurant_schema.Restaurant,
                    tags=['restaurants'],
                    description='Delete a restaurant by id.')
-def delete_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
+def delete_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
     restaurant_to_delete = restaurant_controller.get_restaurant(
         db, restaurant_id=restaurant_id)
     if restaurant_to_delete is None:
@@ -90,3 +90,24 @@ def delete_restaurant(restaurant_id: int, db: Session = Depends(get_db)):
             status_code=500,
             detail="Restaurant could not be deleted, contact the administrator.")
     return deleted_restaurant
+
+
+@restaurant.post("/restaurants/import",
+                 response_model=restaurant_schema.RestaurantImportResponse,
+                 tags=['restaurants'],
+                 description='Import restaurants from a CSV file.')
+def import_restaurants(file: UploadFile, db: Session = Depends(get_db)):
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(
+            status_code=400,
+            detail="File must be a CSV file.")
+
+    data_count = restaurant_controller.import_restaurants(
+        db=db, file=file.file)
+
+    if data_count is False:
+        raise HTTPException(
+            status_code=500,
+            detail="Restaurants could not be imported, contact the administrator.")
+
+    return {"total_imported": data_count}
