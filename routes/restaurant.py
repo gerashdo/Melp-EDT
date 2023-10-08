@@ -61,7 +61,10 @@ def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
     return db_restaurant
 
 
-@restaurant.post("/restaurants/", response_model=restaurant_schema.Restaurant)
+@restaurant.post("/restaurants/",
+                 response_model=restaurant_schema.Restaurant,
+                 tags=['restaurants'],
+                 description='Create a restaurant.')
 def create_restaurant(
         restaurant: restaurant_schema.RestaurantCreate,
         db: Session = Depends(get_db)):
